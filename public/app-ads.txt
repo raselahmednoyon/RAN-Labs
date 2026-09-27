@@ -1,0 +1,6 @@
+# RAN Labs Official app-ads.txt Specification
+# Reference: https://iabtechlab.com/ads-txt/
+# Status: ACTIVE // VERIFIED ADMOB KEY
+
+# Google AdMob - Tiger OM Verified Publisher ID
+google.com, pub-5358770246002278, DIRECT, f08c47fec0942fa0

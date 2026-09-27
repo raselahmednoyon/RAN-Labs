@@ -1,0 +1,11 @@
+{
+  "name": "RAN Labs Brand Portal",
+  "description": "The official locked brand identity, visual system, and product hierarchy ecosystem for RAN Labs.",
+  "requestFramePermissions": [
+    "allow-same-origin",
+    "allow-scripts",
+    "allow-forms",
+    "allow-popups"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
