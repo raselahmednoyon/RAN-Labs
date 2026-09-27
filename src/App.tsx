@@ -12,8 +12,32 @@ import Legal from './pages/Legal';
 import BrandPortal from './pages/BrandPortal';
 
 export default function App() {
-  // Simple state router: 'home' | 'ecosystem' | 'tiger-middle-east' | 'chithi-you' | 'about' | 'legal' | 'brand-portal'
-  const [currentRoute, setCurrentRoute] = useState<string>('home');
+  // Parse initial route from URL path to support bookmarking and direct navigation
+  const getInitialRoute = (): string => {
+    const path = window.location.pathname.replace(/^\/|\/$/g, '');
+    const validRoutes = ['ecosystem', 'tiger-middle-east', 'chithi-you', 'about', 'legal', 'brand-portal'];
+    return validRoutes.includes(path) ? path : 'home';
+  };
+
+  const [currentRoute, setCurrentRoute] = useState<string>(getInitialRoute);
+
+  // Sync state with back/forward history navigation buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentRoute(getInitialRoute());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Update browser URL state during internal client navigation
+  const handleNavigate = (route: string) => {
+    setCurrentRoute(route);
+    const targetPath = route === 'home' ? '/' : `/${route}`;
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState(null, '', targetPath);
+    }
+  };
 
   // Dynamic SEO friendly title/meta updates
   useEffect(() => {
@@ -70,7 +94,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentRoute) {
       case 'home':
-        return <Home onNavigate={setCurrentRoute} />;
+        return <Home onNavigate={handleNavigate} />;
       case 'ecosystem':
         return <Ecosystem />;
       case 'tiger-middle-east':
@@ -84,7 +108,7 @@ export default function App() {
       case 'brand-portal':
         return <BrandPortal />;
       default:
-        return <Home onNavigate={setCurrentRoute} />;
+        return <Home onNavigate={handleNavigate} />;
     }
   };
 
@@ -102,7 +126,7 @@ export default function App() {
             <span>Step 2 Website Architecture Enabled</span>
           </div>
           <button 
-            onClick={() => setCurrentRoute('brand-portal')}
+            onClick={() => handleNavigate('brand-portal')}
             className="sm:ml-3 text-yellow-500 hover:text-yellow-400 font-bold transition-colors underline underline-offset-2"
           >
             Access Identity Spec Portal &rarr;
@@ -111,7 +135,7 @@ export default function App() {
       </div>
 
       {/* Shared Header Navigation */}
-      <Header currentRoute={currentRoute} onNavigate={setCurrentRoute} />
+      <Header currentRoute={currentRoute} onNavigate={handleNavigate} />
 
       {/* Dynamic Main Body Content */}
       <main className="flex-grow flex flex-col pb-16">
@@ -119,7 +143,7 @@ export default function App() {
       </main>
 
       {/* Shared Footer Navigation */}
-      <Footer onNavigate={setCurrentRoute} />
+      <Footer onNavigate={handleNavigate} />
 
     </div>
   );
